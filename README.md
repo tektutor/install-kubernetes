@@ -88,7 +88,7 @@ sudo virt-install \
   --ram 128 \
   --vcpus 12 \
   --cdrom /home/rps/Downloads/ubuntu-24.04.2-live-server-amd64.iso \
-  --drive path=/var/lib/libvirt/images/master-1.qcow2 \
+  --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2,bus=virtio \
   --os-variant ubuntu \
   --network bridge=kubernetes \
   --graphics none \
