@@ -102,9 +102,7 @@ virt-install \
   --network network=default,model=virtio \
   --graphics none \
   --console pty,target_type=serial \
-  --kernel /var/lib/libvirt/ubuntu24-netboot/vmlinuz \
-  --initrd /var/lib/libvirt/ubuntu24-netboot/initrd \
-  --extra-args 'console=ttyS0,115200n8 interface=auto boot=casper automatic-ubiquity'
+  --boot kernel=/var/lib/libvirt/ubuntu24-netboot/vmlinuz,initrd=/var/lib/libvirt/ubuntu24-netboot/initrd,kernel_args="console=ttyS0,115200n8 interface=auto boot=casper automatic-ubiquity"
 ```
 
 Create a virtual machine for Master 2 with Ubuntu 24.04
