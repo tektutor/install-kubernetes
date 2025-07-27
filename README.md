@@ -88,11 +88,21 @@ sudo virt-install \
   --ram 128 \
   --vcpus 12 \
   --cdrom /home/rps/Downloads/ubuntu-24.04.2-live-server-amd64.iso \
-  --drive file=/var/lib/libvirt/images/master1.qcow2 \
+  --disk path=/var/lib/libvirt/images/master1.qcow2 \
   --os-variant ubuntu \
   --network bridge=kubernetes \
   --graphics none \
   --serial pty \ocp-bastion-server
   --console pty \
   --boot d \
+
+sudo virt-install \
+--name RockLinuxVM \
+--ram 1024 \
+--vcpus 2 \
+--disk path=/var/lib/libvirt/images/rocklinuxvm.img,size=10 \
+--os-variant rocky9 \
+--network bridge=br0 \
+--graphics vnc,listen=0.0.0.0 \
+--cdrom /home/linuxtechi/Rocky-9.3-x86_64-minimal.iso
 ```
