@@ -83,24 +83,16 @@ Network kubernetes defined from virt-net.xml
 
 Create a virtual machine for Master 1 with Ubuntu 24.04
 ```
-sudo virt-install \
+virt-install \
   --name master-1 \
-  --ram 131072 \
+  --memory 131072 \
   --vcpus 12 \
-  --cdrom /home/rps/Downloads/ubuntu-24.04.2-live-server-amd64.iso \
-  --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2,bus=virtio \
-  --os-variant ubuntu \
-  --network bridge=kubernetes \
+  --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2 \
+  --cdrom /home/rps/Download/ubuntu24.04.2-live-server-amd64.iso \
   --graphics none \
-  --console pty
-
-sudo virt-install \
---name RockLinuxVM \
---ram 1024 \
---vcpus 2 \
---disk path=/var/lib/libvirt/images/rocklinuxvm.img,size=10 \
---os-variant rocky9 \
---network bridge=br0 \
---graphics vnc,listen=0.0.0.0 \
---cdrom /home/linuxtechi/Rocky-9.3-x86_64-minimal.iso
+  --network network=kubernetes,model=virtio \
+  --os-variant=ubuntu24.04 \
+  --graphics none \
+  --console pty,target_type=serial \
+  --extra-args "console=ttyS0,115200n8"
 ```
