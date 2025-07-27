@@ -82,6 +82,15 @@ sudo virsh net-define --file virt-net.xml
 Network kubernetes defined from virt-net.xml
 </pre>
 
+Extract Kernel and initrd from iso
+```
+sudo mount -o loop /var/lib/libvirt/images/ubuntu-24.04.2-live-server-amd64.iso /mnt
+mkdir -p /var/lib/libvirt/ubuntu24-netboot
+cp /mnt/casper/vmlinuz /var/lib/libvirt/ubuntu24-netboot/
+cp /mnt/casper/initrd /var/lib/libvirt/ubuntu24-netboot/
+sudo umount /mnt
+```
+
 Create a virtual machine for Master 1 with Ubuntu 24.04
 ```
 virt-install \
@@ -90,12 +99,12 @@ virt-install \
   --vcpus 12 \
   --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2 \
   --os-variant=ubuntu24.04 \
-  --cdrom /var/lib/libvirt/images/ubuntu-24.04.2-live-server-amd64.iso \
-  --network network=kubernetes,model=virtio \
-  --graphics vnc \
+  --network network=default,model=virtio \
+  --graphics none \
   --console pty,target_type=serial \
-  --location 'http://archive.ubuntu.com/ubuntu/dists/noble/main/installer-amd64/' \
-  --extra-args 'console=ttyS0,115200n8 interface=auto interactive=true'
+  --kernel /var/lib/libvirt/ubuntu24-netboot/vmlinuz \
+  --initrd /var/lib/libvirt/ubuntu24-netboot/initrd \
+  --extra-args 'console=ttyS0,115200n8 interface=auto boot=casper automatic-ubiquity'
 ```
 
 Create a virtual machine for Master 2 with Ubuntu 24.04
