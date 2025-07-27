@@ -89,9 +89,8 @@ virt-install \
   --vcpus 12 \
   --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2 \
   --os-variant=ubuntu24.04 \
+  --cdrom /home/rps/Downloads/ubuntu-24.04.2-live-server-amd64.iso \
   --network network=default,model=virtio \
-  --graphics none \
-  --console pty,target_type=serial \
-  --location 'http://archive.ubuntu.com/ubuntu/dists/noble/main/installer-amd64/' \
-  --extra-args 'console=ttyS0,115200n8 interface=auto interactive=true'
+  --graphics vnc \
+  --console pty,target_type=serial
 ```
