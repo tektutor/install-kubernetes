@@ -27,3 +27,12 @@ docker --version
 docker images
 ```
 
+## Install KVM Hypervisor in Ubuntu
+```
+sudo apt update
+sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils -y
+sudo adduser root kvm
+sudo systemctl enable --now libvirtd
+sudo systemctl status libvirtd
+sudo apt install virt-manager -y
+sudo apt install -y guestfs-tools
