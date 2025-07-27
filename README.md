@@ -93,5 +93,5 @@ virt-install \
   --network network=kubernetes,model=virtio \
   --graphics vnc \
   --serial pty \
-  --console pty \
+  --console pty 
 ```
