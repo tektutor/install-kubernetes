@@ -93,6 +93,10 @@ sudo umount /mnt
 
 Create a virtual machine for Master 1 with Ubuntu 24.04
 ```
+sudo virt-builder ubuntu-20.04 --format qcow2 \
+  --size 1000G -o /var/lib/libvirt/images/master-1.qcow2 \
+  --root-password password:Root@123
+
 virt-install \
   --name master-1 \
   --memory 131072 \
@@ -115,10 +119,10 @@ virt-install \
   --disk path=/var/lib/libvirt/images/master-2.qcow2,format=qcow2 \
   --os-variant=ubuntu24.04 \
   --cdrom /var/lib/libvirt/images/ubuntu-24.04.2-live-server-amd64.iso \
-  --network network=kubernetes,model=virtio \
-  --graphics vnc \
-  --serial pty \
-  --console pty 
+  --network network=default,model=virtio \
+  --graphics none \
+  --console pty,target_type=serial \
+  --boot kernel=/var/lib/libvirt/ubuntu24-netboot/vmlinuz,initrd=/var/lib/libvirt/ubuntu24-netboot/initrd,kernel_args="console=ttyS0,115200n8 interface=auto boot=casper automatic-ubiquity"
 ```
 
 Create a virtual machine for Master 3 with Ubuntu 24.04
