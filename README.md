@@ -116,6 +116,9 @@ Configure the network
 ```
 ip link show
 
+sudo apt update
+sudo apt install network-manager -y
+
 nmcli con add type ethernet con-name enp1s0 ifname enp1s0 \
   connection.autoconnect yes ipv4.method manual \
   ipv4.address 192.168.100.254/24 ipv4.gateway 192.168.100.1 \
