@@ -99,28 +99,17 @@ sudo virt-builder ubuntu-20.04 --format qcow2 \
 
 sudo virt-install \
   --name master-1 \
+  --hostname master-1 \
   --ram 131072 \
   --vcpus 12 \
   --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2 \
-  --os-variant ubuntu24.04 \
+  --os-variant debian12 \
   --network bridge=kubernetes \
   --graphics none \
   --serial pty \
   --console pty \
   --boot hd \
   --import
-
-virt-install \
-  --name master-1 \
-  --memory 131072 \
-  --vcpus 12 \
-  --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2 \
-  --os-variant=ubuntu24.04 \
-  --cdrom /var/lib/libvirt/images/ubuntu-24.04.2-live-server-amd64.iso \
-  --network network=default,model=virtio \
-  --graphics none \
-  --console pty,target_type=serial \
-  --boot kernel=/var/lib/libvirt/ubuntu24-netboot/vmlinuz,initrd=/var/lib/libvirt/ubuntu24-netboot/initrd,kernel_args="console=ttyS0,115200n8 interface=auto boot=casper automatic-ubiquity"
 ```
 
 Create a virtual machine for Master 2 with Ubuntu 24.04
