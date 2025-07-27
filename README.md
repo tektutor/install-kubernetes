@@ -30,36 +30,34 @@ docker images
 ## Install KVM Hypervisor in Ubuntu
 ```
 sudo apt update
-sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-viewer -y
+sudo apt install virt-manager, guestfs-tools qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-viewer -y
 
 sudo adduser root kvm
 sudo systemctl enable --now libvirtd
 sudo systemctl status libvirtd
-sudo apt install virt-manager -y
-sudo apt install -y guestfs-tools
 ```
 
 ## Let's create VMs for 3 master and 3 worker nodes
 
+Download Debian-12
+```
+wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.2.0-amd64-netinst.iso -o /var/lib/libvirt/images/debian-12.iso
+```
+
 Create a virtual machine for Master 1 with Ubuntu 24.04
 ```
-sudo virt-builder ubuntu-20.04 --format qcow2 \
-  --size 1000G -o /var/lib/libvirt/images/master-1.qcow2 \
-  --root-password password:Root@123
-
 sudo virt-install \
   --name master-1 \
-  --hostname master-1 \
   --ram 131072 \
+  --disk path=/var/lib/libvirt/images/debian12-vm.qcow2,size=1000,format=qcow2 \
   --vcpus 12 \
-  --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2 \
+  --os-type linux \
   --os-variant debian12 \
   --network default \
-  --graphics none \
-  --serial pty \
-  --console pty \
-  --boot hd \
-  --import
+  --graphics vnc \
+  --console pty,target_type=serial \
+  --cdrom /var/lib/libvirt/images/debian-12.iso \
+  --boot cdrom,hd
 ```
 
 
