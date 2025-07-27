@@ -90,7 +90,8 @@ virt-install \
   --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2 \
   --os-variant=ubuntu24.04 \
   --cdrom /home/rps/Downloads/ubuntu-24.04.2-live-server-amd64.iso \
-  --network network=default,model=virtio \
+  --network network=kubernetes,model=virtio \
   --graphics vnc \
-  --console pty,target_type=serial
+  --serial pty \
+  --console pty \
 ```
