@@ -92,7 +92,7 @@ sudo virt-install \
   --os-variant ubuntu \
   --network bridge=kubernetes \
   --graphics none \
-  --serial pty \ocp-bastion-server
+  --serial pty \
   --console pty \
   --boot d \
 
