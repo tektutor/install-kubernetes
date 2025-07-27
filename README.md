@@ -85,14 +85,14 @@ Create a virtual machine for Master 1 with Ubuntu 24.04
 ```
 sudo virt-install \
   --name master-1 \
-  --ram 128 \
+  --ram 131072 \
   --vcpus 12 \
   --cdrom /home/rps/Downloads/ubuntu-24.04.2-live-server-amd64.iso \
   --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2,bus=virtio \
   --os-variant ubuntu \
   --network bridge=kubernetes \
   --graphics none \
-  --console pty,target_type=serial 
+  --console pty
 
 sudo virt-install \
 --name RockLinuxVM \
