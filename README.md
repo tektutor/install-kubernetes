@@ -103,7 +103,7 @@ sudo virt-install \
   --vcpus 12 \
   --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2 \
   --os-variant ubuntu24.04 \
-  --network bridge=openshift4 \
+  --network bridge=kubernetes \
   --graphics none \
   --serial pty \
   --console pty \
