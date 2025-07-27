@@ -83,19 +83,11 @@ Network kubernetes defined from virt-net.xml
 
 Create a virtual machine for Master 1 with Ubuntu 24.04
 ```
-qemu-system-x86_64 \
-  -m 4G \
-  -drive file=ubuntu_vm.qcow2,format=qcow2 \
-  -boot d \
-  -enable-kvm \
-  -cpu host \
-  -smp 2
-
 sudo virt-install \
   --name master-1 \
   --ram 128 \
   --vcpus 12 \
-  --cdrom ubuntu-24.04.2-live-server-amd64.iso \
+  --cdrom /home/rps/Downloads/ubuntu-24.04.2-live-server-amd64.iso \
   --drive file=/var/lib/libvirt/images/master1.qcow2 \
   --os-variant ubuntu \
   --network bridge=kubernetes \
