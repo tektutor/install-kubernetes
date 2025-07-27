@@ -88,7 +88,7 @@ virt-install \
   --memory 131072 \
   --vcpus 12 \
   --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2 \
-  --cdrom /home/rps/Download/ubuntu24.04.2-live-server-amd64.iso \
+  --cdrom /home/rps/Download/ubuntu-24.04.2-live-server-amd64.iso \
   --graphics none \
   --network network=kubernetes,model=virtio \
   --os-variant=ubuntu24.04 \
