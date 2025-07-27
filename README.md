@@ -97,6 +97,19 @@ sudo virt-builder ubuntu-20.04 --format qcow2 \
   --size 1000G -o /var/lib/libvirt/images/master-1.qcow2 \
   --root-password password:Root@123
 
+sudo virt-install \
+  --name master-1 \
+  --ram 131072 \
+  --vcpus 12 \
+  --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2 \
+  --os-variant ubuntu24.04 \
+  --network bridge=openshift4 \
+  --graphics none \
+  --serial pty \
+  --console pty \
+  --boot hd \
+  --import
+
 virt-install \
   --name master-1 \
   --memory 131072 \
