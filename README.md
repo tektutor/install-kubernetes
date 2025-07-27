@@ -93,8 +93,9 @@ virt-install \
   --cdrom /var/lib/libvirt/images/ubuntu-24.04.2-live-server-amd64.iso \
   --network network=kubernetes,model=virtio \
   --graphics vnc \
-  --serial pty \
-  --console pty 
+  --console pty,target_type=serial \
+  --location 'http://archive.ubuntu.com/ubuntu/dists/noble/main/installer-amd64/' \
+  --extra-args 'console=ttyS0,115200n8 interface=auto interactive=true'
 ```
 
 Create a virtual machine for Master 2 with Ubuntu 24.04
