@@ -95,3 +95,78 @@ virt-install \
   --serial pty \
   --console pty 
 ```
+
+Create a virtual machine for Master 2 with Ubuntu 24.04
+```
+virt-install \
+  --name master-2 \
+  --memory 131072 \
+  --vcpus 12 \
+  --disk path=/var/lib/libvirt/images/master-2.qcow2,format=qcow2 \
+  --os-variant=ubuntu24.04 \
+  --cdrom /var/lib/libvirt/images/ubuntu-24.04.2-live-server-amd64.iso \
+  --network network=kubernetes,model=virtio \
+  --graphics vnc \
+  --serial pty \
+  --console pty 
+```
+
+Create a virtual machine for Master 3 with Ubuntu 24.04
+```
+virt-install \
+  --name master-3 \
+  --memory 131072 \
+  --vcpus 12 \
+  --disk path=/var/lib/libvirt/images/master-3.qcow2,format=qcow2 \
+  --os-variant=ubuntu24.04 \
+  --cdrom /var/lib/libvirt/images/ubuntu-24.04.2-live-server-amd64.iso \
+  --network network=kubernetes,model=virtio \
+  --graphics vnc \
+  --serial pty \
+  --console pty 
+```
+
+Create a virtual machine for Worker 1 with Ubuntu 24.04
+```
+virt-install \
+  --name worker-1 \
+  --memory 131072 \
+  --vcpus 12 \
+  --disk path=/var/lib/libvirt/images/worker-1.qcow2,format=qcow2 \
+  --os-variant=ubuntu24.04 \
+  --cdrom /var/lib/libvirt/images/ubuntu-24.04.2-live-server-amd64.iso \
+  --network network=kubernetes,model=virtio \
+  --graphics vnc \
+  --serial pty \
+  --console pty 
+```
+
+Create a virtual machine for Worker 2 with Ubuntu 24.04
+```
+virt-install \
+  --name worker-2 \
+  --memory 131072 \
+  --vcpus 12 \
+  --disk path=/var/lib/libvirt/images/worker-2.qcow2,format=qcow2 \
+  --os-variant=ubuntu24.04 \
+  --cdrom /var/lib/libvirt/images/ubuntu-24.04.2-live-server-amd64.iso \
+  --network network=kubernetes,model=virtio \
+  --graphics vnc \
+  --serial pty \
+  --console pty 
+```
+
+Create a virtual machine for Worker 3 with Ubuntu 24.04
+```
+virt-install \
+  --name worker-3 \
+  --memory 131072 \
+  --vcpus 12 \
+  --disk path=/var/lib/libvirt/images/worker-3.qcow2,format=qcow2 \
+  --os-variant=ubuntu24.04 \
+  --cdrom /var/lib/libvirt/images/ubuntu-24.04.2-live-server-amd64.iso \
+  --network network=kubernetes,model=virtio \
+  --graphics vnc \
+  --serial pty \
+  --console pty 
+```
