@@ -88,13 +88,11 @@ sudo virt-install \
   --ram 128 \
   --vcpus 12 \
   --cdrom /home/rps/Downloads/ubuntu-24.04.2-live-server-amd64.iso \
-  --disk path=/var/lib/libvirt/images/master1.qcow2 \
+  --drive path=/var/lib/libvirt/images/master-1.qcow2 \
   --os-variant ubuntu \
   --network bridge=kubernetes \
   --graphics none \
-  --serial pty \
-  --console pty \
-  --boot d \
+  --console pty,target_type=serial 
 
 sudo virt-install \
 --name RockLinuxVM \
