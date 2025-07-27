@@ -93,6 +93,5 @@ virt-install \
   --network network=kubernetes,model=virtio \
   --os-variant=ubuntu24.04 \
   --graphics none \
-  --console pty,target_type=serial \
-  --extra-args "console=ttyS0,115200n8"
+  --console pty,target_type=serial
 ```
