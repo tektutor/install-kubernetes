@@ -43,12 +43,12 @@ sudo apt install -y guestfs-tools
 
 Create a disk image
 ```
-qemu-img create -f qcow2 /var/lib/libvirt/images/master-1.qcow2 500G
-qemu-img create -f qcow2 /var/lib/libvirt/images/master-2.qcow2 500G
-qemu-img create -f qcow2 /var/lib/libvirt/images/master-3.qcow2 500G
-qemu-img create -f qcow2 /var/lib/libvirt/images/worker-1.qcow2 500G
-qemu-img create -f qcow2 /var/lib/libvirt/images/worker-2.qcow2 500G
-qemu-img create -f qcow2 /var/lib/libvirt/images/worker-3.qcow2 500G
+qemu-img create -f qcow2 /var/lib/libvirt/images/master-1.qcow2 1000G
+qemu-img create -f qcow2 /var/lib/libvirt/images/master-2.qcow2 1000G
+qemu-img create -f qcow2 /var/lib/libvirt/images/master-3.qcow2 1000G
+qemu-img create -f qcow2 /var/lib/libvirt/images/worker-1.qcow2 1000G
+qemu-img create -f qcow2 /var/lib/libvirt/images/worker-2.qcow2 1000G
+qemu-img create -f qcow2 /var/lib/libvirt/images/worker-3.qcow2 1000G
 ```
 
 Create a file virt-net.xml
