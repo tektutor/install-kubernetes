@@ -41,56 +41,6 @@ sudo apt install -y guestfs-tools
 
 ## Let's create VMs for 3 master and 3 worker nodes
 
-
-Create a disk image
-```
-qemu-img create -f qcow2 /var/lib/libvirt/images/master-1.qcow2 1000G
-qemu-img create -f qcow2 /var/lib/libvirt/images/master-2.qcow2 1000G
-qemu-img create -f qcow2 /var/lib/libvirt/images/master-3.qcow2 1000G
-qemu-img create -f qcow2 /var/lib/libvirt/images/worker-1.qcow2 1000G
-qemu-img create -f qcow2 /var/lib/libvirt/images/worker-2.qcow2 1000G
-qemu-img create -f qcow2 /var/lib/libvirt/images/worker-3.qcow2 1000G
-```
-
-Create a file virt-net.xml
-```
-<network>
-  <name>kubernetes</name>
-  <forward mode='nat'>
-    <nat>
-      <port start='1024' end='65535'/>
-    </nat>
-  </forward>
-  <bridge name='kubernetes' stp='on' delay='0'/>
-  <domain name='kubernetes'/>
-  <ip address='192.168.100.1' netmask='255.255.255.0'>
-  </ip>
-</network>  
-```
-
-Run the below command
-```
-sudo virsh net-define --file virt-net.xml
-sudo virsh net-autostart kubernetes
-sudo virsh net-start kubernetes
-sudo virsh net-list
-```
-
-Expected output
-<pre>
-sudo virsh net-define --file virt-net.xml
-Network kubernetes defined from virt-net.xml
-</pre>
-
-Extract Kernel and initrd from iso
-```
-sudo mount -o loop /var/lib/libvirt/images/ubuntu-24.04.2-live-server-amd64.iso /mnt
-mkdir -p /var/lib/libvirt/ubuntu24-netboot
-cp /mnt/casper/vmlinuz /var/lib/libvirt/ubuntu24-netboot/
-cp /mnt/casper/initrd /var/lib/libvirt/ubuntu24-netboot/
-sudo umount /mnt
-```
-
 Create a virtual machine for Master 1 with Ubuntu 24.04
 ```
 sudo virt-builder ubuntu-20.04 --format qcow2 \
@@ -104,28 +54,12 @@ sudo virt-install \
   --vcpus 12 \
   --disk path=/var/lib/libvirt/images/master-1.qcow2,format=qcow2 \
   --os-variant debian12 \
-  --network bridge=kubernetes \
+  --network default \
   --graphics none \
   --serial pty \
   --console pty \
   --boot hd \
   --import
-```
-
-Configure the network
-```
-ip link show
-
-sudo apt update
-sudo apt install network-manager -y
-
-nmcli con add type ethernet con-name enp1s0 ifname enp1s0 \
-  connection.autoconnect yes ipv4.method manual \
-  ipv4.address 192.168.100.254/24 ipv4.gateway 192.168.100.1 \
-  ipv4.dns 8.8.8.8
-
-ping -c 2 8.8.8.8
-ping -c 2 google.com
 ```
 
 
