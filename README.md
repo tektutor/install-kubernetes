@@ -112,6 +112,20 @@ sudo virt-install \
   --import
 ```
 
+Configure the network
+```
+ip link show
+
+nmcli con add type ethernet con-name enp1s0 ifname enp1s0 \
+  connection.autoconnect yes ipv4.method manual \
+  ipv4.address 192.168.100.254/24 ipv4.gateway 192.168.100.1 \
+  ipv4.dns 8.8.8.8
+
+ping -c 2 8.8.8.8
+ping -c 2 google.com
+```
+
+
 Create a virtual machine for Master 2 with Ubuntu 24.04
 ```
 virt-install \
