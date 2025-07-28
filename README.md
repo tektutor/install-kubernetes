@@ -181,23 +181,6 @@ sudo apt install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
-Run this on master-1 VM
-```
-sudo kubeadm init --control-plane-endpoint "k8s-cluster.local:6443" --upload-certs
-```
-
-Run this on the host machine
-```
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-```
-
-Install Calico network plugin from the host machine
-```
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/calico.yaml
-```
-
 Let's install HAProxy on the host machine
 ```
 sudo apt update
@@ -240,9 +223,19 @@ vagrant ssh k8s-master-1
 Run this on the k8s-master-1 node
 ```
 sudo kubeadm init --control-plane-endpoint "<HOST_IP>:6443" --upload-certs
+
+# Install Calico network plugin from the host machine
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/calico.yaml
 ```
 
+Run this on the first master VM
+```
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
 
+Join the rest of the masters and workers with the join token from first master node
 
 
 ## Let's create VMs for 3 master and 3 worker nodes
