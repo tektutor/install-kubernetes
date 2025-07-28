@@ -3,6 +3,13 @@
 ## Install KVM Hypervisor in Ubuntu
 ```
 sudo apt update
+sudo apt-get install -y curl gnupg software-properties-common
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt-get update
+
 sudo apt install virt-manager, guestfs-tools qemu-kvm libvirt-daemon-system \
      libvirt-clients bridge-utils virt-viewer cloud-image-utils vagrant vagrant-libvirt -y
 
