@@ -24,7 +24,7 @@ touch Vagrantfile
 touch scripts/bootstrap.sh
 ```
 Create a file named Vagrantfile
-<pre>
+```
 Vagrant.configure("2") do |config|
   IMAGE = "generic/ubuntu2204"
   MASTER_COUNT = 3
@@ -60,10 +60,10 @@ Vagrant.configure("2") do |config|
     end
   end
 end
-</pre>
+```
 
 Let's create the scripts/boostrap.sh
-<pre>
+```
 #!/bin/bash
 
 # Disable swap
@@ -107,7 +107,7 @@ net.ipv4.ip_forward = 1
 EOF
 
 sysctl --system
-</pre>
+```
 
 Make sure the script is executable
 ```
