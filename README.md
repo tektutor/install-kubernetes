@@ -215,3 +215,118 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
 Join the rest of the masters and workers with the join token from first master node
+
+Ansible Playbook to automate this process
+<pre>
+---
+- name: Provision multi-master, multi-worker Kubernetes cluster with HAProxy (KVM)
+  hosts: all
+  become: true
+  vars:
+    kube_version: "1.29.0"
+    pod_network_cidr: "192.168.0.0/16"
+    haproxy_lb_ip: "192.168.56.100"
+    masters:
+      - { name: master01.k8s.rps.com, ip: 192.168.56.11 }
+      - { name: master02.k8s.rps.com, ip: 192.168.56.12 }
+      - { name: master03.k8s.rps.com, ip: 192.168.56.13 }
+    workers:
+      - { name: worker01.k8s.rps.com, ip: 192.168.56.21 }
+      - { name: worker02.k8s.rps.com, ip: 192.168.56.22 }
+      - { name: worker03.k8s.rps.com, ip: 192.168.56.23 }
+
+  tasks:
+    - name: Disable swap
+      ansible.builtin.command: swapoff -a
+
+    - name: Remove swap entry from fstab
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^([^#].*\sswap\s)'
+        replace: '#\1'
+
+    - name: Load required kernel modules
+      ansible.builtin.copy:
+        dest: /etc/modules-load.d/k8s.conf
+        content: |
+          overlay
+          br_netfilter
+
+    - name: Configure sysctl
+      ansible.builtin.copy:
+        dest: /etc/sysctl.d/k8s.conf
+        content: |
+          net.bridge.bridge-nf-call-ip6tables = 1
+          net.bridge.bridge-nf-call-iptables = 1
+          net.ipv4.ip_forward = 1
+
+    - name: Apply sysctl settings
+      ansible.builtin.command: sysctl --system
+
+    - name: Install containerd
+      ansible.builtin.apt:
+        name: containerd
+        state: present
+        update_cache: true
+
+    - name: Configure containerd
+      ansible.builtin.shell: |
+        mkdir -p /etc/containerd
+        containerd config default > /etc/containerd/config.toml
+      args:
+        creates: /etc/containerd/config.toml
+
+    - name: Restart containerd
+      ansible.builtin.service:
+        name: containerd
+        state: restarted
+        enabled: true
+
+    - name: Add Kubernetes APT key
+      ansible.builtin.apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add Kubernetes repo
+      ansible.builtin.apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+
+    - name: Install Kubernetes components
+      ansible.builtin.apt:
+        name:
+          - kubelet
+          - kubeadm
+          - kubectl
+        state: present
+        update_cache: true
+
+    - name: Hold kube packages
+      ansible.builtin.apt:
+        name:
+          - kubelet
+          - kubeadm
+          - kubectl
+        state: held
+
+- name: Configure HAProxy on host
+  hosts: haproxy
+  become: true
+  tasks:
+    - name: Install HAProxy
+      ansible.builtin.apt:
+        name: haproxy
+        state: present
+        update_cache: true
+
+    - name: Configure HAProxy for Kubernetes API load balancing
+      ansible.builtin.template:
+        src: haproxy.cfg.j2
+        dest: /etc/haproxy/haproxy.cfg
+
+    - name: Restart HAProxy
+      ansible.builtin.service:
+        name: haproxy
+        state: restarted
+        enabled: true     
+</pre>
