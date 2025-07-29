@@ -338,6 +338,24 @@ sudo rm -rf /etc/kubernetes/pki /etc/kubernetes/manifests /var/lib/etcd
 sudo systemctl restart kubelet
 ```
 
+Open up these ports on all master
+```
+# Kubernetes API server (needed by kubelets, HAProxy, kubectl, etc.)
+sudo ufw allow 6443/tcp
+
+# etcd server-client communication (between masters)
+sudo ufw allow 2379:2380/tcp
+
+# kubelet API (used for logs, exec, probes, etc.)
+sudo ufw allow 10250/tcp
+
+# kube-scheduler metrics (optional)
+sudo ufw allow 10259/tcp
+
+# kube-controller-manager metrics (optional)
+sudo ufw allow 10257/tcp
+```
+
 Rerun this on the first master
 ```
 kubeadm token create --print-join-command --ttl 1h 
