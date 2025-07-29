@@ -33,7 +33,7 @@ Create a folder as admin
 ```
 sudo su -
 mkdir -p /root/kubernetes/scripts
-cd kubernetes
+cd /root/kubernetes
 touch Vagrantfile
 touch scripts/bootstrap.sh
 ```
@@ -42,9 +42,9 @@ Create a file named Vagrantfile
 Vagrant.configure("2") do |config|
   IMAGE = "generic/ubuntu2204"
   MASTER_COUNT = 3
-  WORKER_COUNT = 2
-  VM_MEMORY = 4096
-  VM_CPUS = 2
+  WORKER_COUNT = 3
+  VM_MEMORY = 131072
+  VM_CPUS = 10
   NET_PREFIX = "192.168.56"
 
   config.vm.box = IMAGE
