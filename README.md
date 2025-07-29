@@ -250,7 +250,7 @@ sudo apt install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
-Let's install HAProxy on the host machine
+Let's install HAProxy on the haproxy vm
 ```
 sudo apt update
 sudo apt install -y haproxy
@@ -293,6 +293,15 @@ Restart HAProxy
 ```
 sudo systemctl restart haproxy
 sudo systemctl enable haproxy
+```
+
+Open these ports on the HAProxy VM
+```
+sudo ufw allow 6443/tcp
+sudo ufw allow 22/tcp        # if SSH is needed
+sudo ufw allow 8404/tcp      # only if enabling HAProxy stats UI
+sudo iptables -A INPUT -p tcp --dport 6443 -j ACCEPT
+
 ```
 
 SSH into first master VM
