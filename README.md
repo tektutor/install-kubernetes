@@ -340,6 +340,6 @@ sudo systemctl restart kubelet
 
 Rerun this on the first master
 ```
-kubeadm token create --print-join-command --ttl 1h --control-plane
+kubeadm token create --print-join-command --ttl 1h 
 kubeadm init phase upload-certs --upload-certs
 ```
