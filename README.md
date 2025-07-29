@@ -258,24 +258,35 @@ sudo apt install -y haproxy
 
 Edit /etc/haproxy/haproxy.cfg and replace the bottom section with the following:
 <pre>
-defaults
-    mode tcp
-    timeout connect 10s
-    timeout client 1m
-    timeout server 1m
-    log global
-    option tcplog
+global
+    log /dev/log local0
+    log /dev/log local1 notice
+    daemon
+    maxconn 2048
 
-frontend kubernetes-api
+defaults
+    log     global
+    mode    tcp
+    option  tcplog
+    timeout connect 10s
+    timeout client  1m
+    timeout server  1m
+
+# Frontend for Kubernetes API
+frontend k8s_api
     bind *:6443
     default_backend k8s_masters
 
+# Backend: Kubernetes Master Nodes
 backend k8s_masters
+    mode tcp
     balance roundrobin
     option tcp-check
-    server master1 192.168.56.11:6443 check
-    server master2 192.168.56.12:6443 check
-    server master3 192.168.56.13:6443 check  
+    default-server inter 5s fall 3 rise 2
+
+    server master01 192.168.56.11:6443 check
+    server master02 192.168.56.12:6443 check
+    server master03 192.168.56.13:6443 check
 </pre>
 
 Restart HAProxy
