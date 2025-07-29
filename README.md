@@ -309,16 +309,44 @@ SSH into first master VM
 vagrant ssh k8s-master-1
 ```
 
+Run this on master1
+```
+hostnamectl set-hostname master01.k8s.rps.com
+```
+
+Run this on master2
+```
+hostnamectl set-hostname master02.k8s.rps.com
+```
+
+Run this on master3
+```
+hostnamectl set-hostname master03.k8s.rps.com
+```
+
+Add the below in /etc/hosts on all nodes
+```
+192.168.56.10 haproxy.k8s.rps.com
+192.168.56.11 master01.k8s.rps.com
+192.168.56.12 master02.k8s.rps.com
+192.168.56.13 master03.k8s.rps.com
+192.168.56.21 worker01.k8s.rps.com
+192.168.56.22 worker02.k8s.rps.com
+192.168.56.23 worker03.k8s.rps.com
+```
+
 Run this on the k8s-master-1 node
 ```
+hostnamectl set-hostname master01.k8s.rps.com
 sudo kubeadm init --control-plane-endpoint "192.168.10.10:6443" --upload-certs
 sudo kubeadm token create --ttl 1h --print-join-command
 sudo kubeadm init phase upload-certs --upload-certs
 
-
 # Install Calico network plugin from the host machine
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/calico.yaml
 ```
+
+
 
 Run this on the first master VM
 ```
