@@ -137,6 +137,25 @@ Make sure the script is executable
 chmod +x scripts/bootstrap.sh
 ```
 
+In case, you wish to clean existing VMs
+```
+# Step 1: Destroy all VMs
+vagrant destroy -f
+
+# Step 2: Remove old `.vagrant` metadata and state
+rm -rf .vagrant
+
+# (Optional) Remove VirtualBox/Libvirt VMs if Vagrant left anything hanging
+# For VirtualBox:
+VBoxManage list vms
+VBoxManage unregistervm <vm-name> --delete
+
+# For Libvirt:
+virsh list --all
+virsh destroy <vm-name>
+virsh undefine <vm-name> --remove-all-storage
+```
+
 Let's create the VMs using Vagrant now
 ```
 cd kubernetes
