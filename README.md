@@ -178,6 +178,13 @@ ifconfig eno2
 ping 8.8.8.8
 ```
 
+Listing all Vagrants VMS
+```
+vagrant global-status
+cd /root/kubernetes
+vagrant ssh 
+```
+
 Run this on all Virtual Machines
 ```
 # Install Docker or containerd
