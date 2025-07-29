@@ -311,7 +311,10 @@ vagrant ssh k8s-master-1
 
 Run this on the k8s-master-1 node
 ```
-sudo kubeadm init --control-plane-endpoint "<HOST_IP>:6443" --upload-certs
+sudo kubeadm init --control-plane-endpoint "192.168.10.10:6443" --upload-certs
+sudo kubeadm token create --ttl 1h --print-join-command
+sudo kubeadm init phase upload-certs --upload-certs
+
 
 # Install Calico network plugin from the host machine
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/calico.yaml
