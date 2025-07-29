@@ -40,35 +40,50 @@ touch scripts/bootstrap.sh
 Create a file named Vagrantfile
 ```
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/jammy64"
+  config.vm.box = "ubuntu/ubuntu-22.04"
 
-  # Define HAProxy Node
+  # HAProxy Load Balancer
   config.vm.define "haproxy" do |haproxy|
     haproxy.vm.hostname = "haproxy.k8s.rps.com"
     haproxy.vm.network "private_network", ip: "192.168.56.10"
     haproxy.vm.provider "virtualbox" do |vb|
-      vb.memory = 1024
-      vb.cpus = 1
+      vb.memory = 2048
+      vb.cpus = 2
     end
     haproxy.vm.provider "libvirt" do |lv|
-      lv.memory = 1024
-      lv.cpus = 1
+      lv.memory = 2048
+      lv.cpus = 2
     end
   end
 
   # Define Master Nodes
   (1..3).each do |i|
-    config.vm.define "master#{i}" do |node|
-      node.vm.hostname = "master0#{i}.k8s.rps.com"
-      node.vm.network "private_network", ip: "192.168.56.1#{i}"
-
-      node.vm.provider "virtualbox" do |vb|
-        vb.memory = 2048
-        vb.cpus = 2
+    config.vm.define "master0#{i}" do |master|
+      master.vm.hostname = "master0#{i}.k8s.rps.com"
+      master.vm.network "private_network", ip: "192.168.56.1#{i}"
+      master.vm.provider "virtualbox" do |vb|
+        vb.memory = 131072
+        vb.cpus = 10
       end
-      node.vm.provider "libvirt" do |lv|
-        lv.memory = 2048
-        lv.cpus = 2
+      master.vm.provider "libvirt" do |lv|
+        lv.memory = 131072
+        lv.cpus = 10
+      end
+    end
+  end
+
+  # Define Worker Nodes
+  (1..3).each do |i|
+    config.vm.define "worker0#{i}" do |worker|
+      worker.vm.hostname = "worker0#{i}.k8s.rps.com"
+      worker.vm.network "private_network", ip: "192.168.56.2#{i}"
+      worker.vm.provider "virtualbox" do |vb|
+        vb.memory = 131072
+        vb.cpus = 10
+      end
+      worker.vm.provider "libvirt" do |lv|
+        lv.memory = 131072
+        lv.cpus = 10
       end
     end
   end
