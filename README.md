@@ -10,8 +10,15 @@ https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
 sudo tee /etc/apt/sources.list.d/hashicorp.list
 sudo apt-get update
 
-sudo apt install virt-manager, guestfs-tools qemu-kvm libvirt-daemon-system \
-     libvirt-clients bridge-utils virt-viewer cloud-image-utils vagrant vagrant-libvirt -y
+sudo apt-get install -y qemu libvirt-daemon-system libvirt-clients ebtables dnsmasq \
+                        libxslt-dev libxml2-dev libvirt-dev zlib1g-dev ruby-dev \
+                        bridge-utils libguestfs-tools gcc make virt-manager guestfs-tools \
+                        qemu-kvm virt-viewer cloud-image-utils vagrant -y
+
+sudo usermod -aG libvirt $(whoami)
+sudo usermod -aG kvm $(whoami)     
+vagrant plugin install vagrant-libvirt
+vagrant plugin list
 
 sudo apt install net-tools neovim tree iputils-ping tmux git
 
