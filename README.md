@@ -167,6 +167,9 @@ network:
 Run this on the host machine
 ```
 ls -l /etc/netplan/
+
+# This is mandatory before issuing netplan commands, otherwise we will lose network connectivity to the machine
+# Especially if this is a remote machine, this is mandatory
 sudo chmod 600 /etc/netplan/01-netcfg.yaml
 
 sudo netplan try
