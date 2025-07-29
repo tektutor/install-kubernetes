@@ -174,7 +174,7 @@ sudo chmod 600 /etc/netplan/01-netcfg.yaml
 
 sudo netplan try
 sudo netplan apply
-ip a
+ifconfig eno2
 ping 8.8.8.8
 ```
 
