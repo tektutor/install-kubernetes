@@ -131,6 +131,10 @@ chmod +x scripts/bootstrap.sh
 Let's create the VMs using Vagrant now
 ```
 cd kubernetes
+virsh pool-define-as default dir - - - - "/var/lib/libvirt/images"
+virsh pool-autostart default
+virsh pool-start default
+
 vagrant up
 ```
 
