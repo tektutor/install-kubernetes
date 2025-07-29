@@ -49,28 +49,37 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = IMAGE
 
-  config.vm.provider :libvirt do |v|
-    v.memory = VM_MEMORY
-    v.cpus = VM_CPUS
-  end
-
   config.vm.provision "shell", path: "scripts/bootstrap.sh"
 
   # Master Nodes
   (1..MASTER_COUNT).each do |i|
     node_name = "master%02d.k8s.rps.com" % i
+    ip = "#{NET_PREFIX}.1#{i}"
     config.vm.define node_name do |node|
       node.vm.hostname = node_name
-      node.vm.network "private_network", ip: "#{NET_PREFIX}.1#{i}"
+      node.vm.network "private_network", ip: ip, libvirt__network_name: "vagrant-libvirt"
+
+      node.vm.provider :libvirt do |libvirt|
+        libvirt.memory = VM_MEMORY
+        libvirt.cpus = VM_CPUS
+        libvirt.storage_pool_name = "default"
+      end
     end
   end
 
   # Worker Nodes
   (1..WORKER_COUNT).each do |i|
     node_name = "worker%02d.k8s.rps.com" % i
+    ip = "#{NET_PREFIX}.2#{i}"
     config.vm.define node_name do |node|
       node.vm.hostname = node_name
-      node.vm.network "private_network", ip: "#{NET_PREFIX}.2#{i}"
+      node.vm.network "private_network", ip: ip, libvirt__network_name: "vagrant-libvirt"
+
+      node.vm.provider :libvirt do |libvirt|
+        libvirt.memory = VM_MEMORY
+        libvirt.cpus = VM_CPUS
+        libvirt.storage_pool_name = "default"
+      end
     end
   end
 end
