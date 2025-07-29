@@ -166,7 +166,13 @@ network:
 
 Run this on the host machine
 ```
+ls -l /etc/netplan/
+sudo chmod 600 /etc/netplan/01-netcfg.yaml
+
+sudo netplan try
 sudo netplan apply
+ip a
+ping 8.8.8.8
 ```
 
 Run this on all Virtual Machines
