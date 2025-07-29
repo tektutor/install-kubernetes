@@ -1,6 +1,6 @@
 # Install Kubernetes in Ubuntu 24.04 64-bit LTS
 
-## Install KVM Hypervisor in Ubuntu
+## Install KVM Hypervisor in Ubuntu Server
 ```
 sudo apt update
 sudo apt-get install -y curl gnupg software-properties-common
@@ -328,3 +328,12 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
 Join the rest of the masters and workers with the join token from first master node
+
+In case the joins fails
+```
+sudo systemctl status kubelet
+
+sudo kubeadm reset -f
+sudo rm -rf /etc/kubernetes/pki /etc/kubernetes/manifests /var/lib/etcd
+sudo systemctl restart kubelet
+```
