@@ -337,3 +337,9 @@ sudo kubeadm reset -f
 sudo rm -rf /etc/kubernetes/pki /etc/kubernetes/manifests /var/lib/etcd
 sudo systemctl restart kubelet
 ```
+
+Rerun this on the first master
+```
+kubeadm token create --print-join-command --ttl 1h --control-plane
+kubeadm init phase upload-certs --upload-certs
+```
