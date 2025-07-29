@@ -40,45 +40,35 @@ touch scripts/bootstrap.sh
 Create a file named Vagrantfile
 ```
 Vagrant.configure("2") do |config|
-  IMAGE = "generic/ubuntu2204"
-  MASTER_COUNT = 3
-  WORKER_COUNT = 3
-  VM_MEMORY = 131072
-  VM_CPUS = 10
-  NET_PREFIX = "192.168.56"
+  config.vm.box = "ubuntu/jammy64"
 
-  config.vm.box = IMAGE
-
-  config.vm.provision "shell", path: "scripts/bootstrap.sh"
-
-  # Master Nodes
-  (1..MASTER_COUNT).each do |i|
-    node_name = "master%02d.k8s.rps.com" % i
-    ip = "#{NET_PREFIX}.1#{i}"
-    config.vm.define node_name do |node|
-      node.vm.hostname = node_name
-      node.vm.network "private_network", ip: ip, libvirt__network_name: "vagrant-libvirt"
-
-      node.vm.provider :libvirt do |libvirt|
-        libvirt.memory = VM_MEMORY
-        libvirt.cpus = VM_CPUS
-        libvirt.storage_pool_name = "default"
-      end
+  # Define HAProxy Node
+  config.vm.define "haproxy" do |haproxy|
+    haproxy.vm.hostname = "haproxy.k8s.rps.com"
+    haproxy.vm.network "private_network", ip: "192.168.56.10"
+    haproxy.vm.provider "virtualbox" do |vb|
+      vb.memory = 1024
+      vb.cpus = 1
+    end
+    haproxy.vm.provider "libvirt" do |lv|
+      lv.memory = 1024
+      lv.cpus = 1
     end
   end
 
-  # Worker Nodes
-  (1..WORKER_COUNT).each do |i|
-    node_name = "worker%02d.k8s.rps.com" % i
-    ip = "#{NET_PREFIX}.2#{i}"
-    config.vm.define node_name do |node|
-      node.vm.hostname = node_name
-      node.vm.network "private_network", ip: ip, libvirt__network_name: "vagrant-libvirt"
+  # Define Master Nodes
+  (1..3).each do |i|
+    config.vm.define "master#{i}" do |node|
+      node.vm.hostname = "master0#{i}.k8s.rps.com"
+      node.vm.network "private_network", ip: "192.168.56.1#{i}"
 
-      node.vm.provider :libvirt do |libvirt|
-        libvirt.memory = VM_MEMORY
-        libvirt.cpus = VM_CPUS
-        libvirt.storage_pool_name = "default"
+      node.vm.provider "virtualbox" do |vb|
+        vb.memory = 2048
+        vb.cpus = 2
+      end
+      node.vm.provider "libvirt" do |lv|
+        lv.memory = 2048
+        lv.cpus = 2
       end
     end
   end
