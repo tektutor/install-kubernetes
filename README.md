@@ -157,10 +157,10 @@ network:
   version: 2
   renderer: networkd
   ethernets:
-    enp1s0: {}
+    eno2: {}
   bridges:
     br0:
-      interfaces: [enp1s0]
+      interfaces: [eno2]
       dhcp4: true  
 </pre>
 
