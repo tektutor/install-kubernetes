@@ -36,6 +36,10 @@ mkdir -p /root/kubernetes/scripts
 cd /root/kubernetes
 touch Vagrantfile
 touch scripts/bootstrap.sh
+
+wget https://vagrantcloud.com/ubuntu/boxes/jammy64/versions/20240514.0.0/providers/virtualbox.box -O jammy64.box
+vagrant box add ubuntu/jammy64 ./jammy64.box
+
 ```
 Create a file named Vagrantfile
 ```
