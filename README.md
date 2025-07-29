@@ -110,9 +110,19 @@ deb http://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 
 # Install Kubernetes components
-apt-get update
-apt-get install -y kubelet kubeadm kubectl
-apt-mark hold kubelet kubeadm kubectl
+sudo rm -f /etc/apt/sources.list.d/kubernetes.list
+sudo rm -f /usr/share/keyrings/kubernetes-archive-keyring.gpg
+sudo mkdir -p /etc/apt/keyrings
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | \
+  gpg --dearmor | sudo tee /etc/apt/keyrings/kubernetes-apt-keyring.gpg > /dev/null
+
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /" | \
+  sudo tee /etc/apt/sources.list.d/kubernetes.list > /dev/null
+
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
 
 # Enable kernel modules and sysctl settings
 modprobe overlay
