@@ -43,6 +43,21 @@ vagrant box add ubuntu/jammy64 ./jammy64.box
 ```
 Create a file named Vagrantfile
 ```
+# Suppress the "Unrecognized arguments: libvirt_ip_command" warning
+# This is a known issue with vagrant-libvirt and is generally safe to ignore.
+if Vagrant.has_plugin?("vagrant-libvirt")
+  Vagrant.configure("2") do |config|
+    config.vm.provider :libvirt do |libvirt|
+      libvirt.logger.class.class_eval do
+        def warn(msg)
+          return if msg.include?('Unrecognized arguments: libvirt_ip_command')
+          super
+        end
+      end
+    end
+  end
+end
+
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/ubuntu-22.04"
 
