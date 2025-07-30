@@ -109,9 +109,10 @@ sudo apt update
 sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
 sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
-
 sudo systemctl restart containerd
 
+sudo cat /var/lib/kubelet/config.yaml | grep cgroupDriver
+containerd config dump | grep SystemdCgroup
 
 # Containerd config
 mkdir -p /etc/containerd
