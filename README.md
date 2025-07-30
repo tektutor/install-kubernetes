@@ -407,6 +407,11 @@ DNS=8.8.8.8 8.8.4.4
 # Use spaces to separate multiple addresses.
 ```
 
+Restart service
+```
+sudo systemctl restart systemd-resolved
+```
+
 
 # Install Calico network plugin from the host machine
 ```
