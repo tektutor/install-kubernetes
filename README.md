@@ -1,9 +1,5 @@
 # Install Kubernetes in Ubuntu 24.04 64-bit LTS
 
-# Day 3
-
-## Demo - Installing a HA Kubernetes cluster with 3 worker nodes
-
 #### Install KVM Hypervisor in Ubuntu Server
 ```
 sudo apt update
