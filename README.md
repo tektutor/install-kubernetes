@@ -43,21 +43,6 @@ vagrant box add ubuntu/jammy64 ./jammy64.box
 ```
 Create a file named Vagrantfile
 ```
-# Suppress the "Unrecognized arguments: libvirt_ip_command" warning
-# This is a known issue with vagrant-libvirt and is generally safe to ignore.
-if Vagrant.has_plugin?("vagrant-libvirt")
-  Vagrant.configure("2") do |config|
-    config.vm.provider :libvirt do |libvirt|
-      libvirt.logger.class.class_eval do
-        def warn(msg)
-          return if msg.include?('Unrecognized arguments: libvirt_ip_command')
-          super
-        end
-      end
-    end
-  end
-end
-
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/ubuntu-22.04"
 
@@ -120,6 +105,13 @@ sed -i '/ swap / s/^/#/' /etc/fstab
 # Install dependencies
 apt-get update
 apt-get install -y apt-transport-https curl ca-certificates gnupg lsb-release containerd
+sudo apt update
+sudo mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+
+sudo systemctl restart containerd
+
 
 # Containerd config
 mkdir -p /etc/containerd
@@ -242,7 +234,7 @@ Run this on all Virtual Machines
 ```
 # Install Docker or containerd
 sudo apt update
-sudo apt install -y apt-transport-https curl
+sudo apt-get install -y apt-transport-https ca-certificates curl
 sudo apt install -y containerd
 sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
