@@ -443,6 +443,9 @@ sudo systemctl status kubelet
 
 sudo kubeadm reset -f
 sudo rm -rf /etc/kubernetes/pki /etc/kubernetes/manifests /var/lib/etcd
+sudo rm -rf /etc/kubernetes/
+sudo rm -rf /var/lib/kubelet
+sudo rm -rf /var/lib/etcd
 sudo systemctl restart kubelet
 ```
 
