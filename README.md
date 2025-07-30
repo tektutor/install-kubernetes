@@ -388,8 +388,7 @@ sudo kubeadm token create --ttl 1h --print-join-command
 sudo kubeadm init phase upload-certs --upload-certs
 
 # Install Calico network plugin from the host machine
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/calico.yaml
-```
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.2/manifests/calico.yaml```
 
 
 
