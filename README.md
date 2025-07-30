@@ -397,6 +397,16 @@ cat /var/lib/kubelet/config.yaml | grep cgroupDriver
 sysctl net.bridge.bridge-nf-call-iptables
 sysctl net.ipv4.ip_forward
 ```
+Also edit sudo vim /etc/systemd/resolved.conf
+```
+[Resolve]
+# The DNS server IP addresses to use.
+DNS=8.8.8.8 8.8.4.4
+# The DNS servers will be used for resolving domain names and other resource records.
+# The list should contain no more than three servers.
+# Use spaces to separate multiple addresses.
+```
+
 
 # Install Calico network plugin from the host machine
 ```
