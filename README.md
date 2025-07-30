@@ -396,6 +396,15 @@ containerd config dump | grep SystemdCgroup
 cat /var/lib/kubelet/config.yaml | grep cgroupDriver
 sysctl net.bridge.bridge-nf-call-iptables
 sysctl net.ipv4.ip_forward
+
+# Stop kubelet to prevent it from restarting etcd
+sudo systemctl stop kubelet
+
+# Delete the data directory (default is /var/lib/etcd)
+sudo rm -rf /var/lib/etcd
+
+# Start kubelet again
+sudo systemctl start kubelet
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ```
 Also edit sudo vim /etc/systemd/resolved.conf
