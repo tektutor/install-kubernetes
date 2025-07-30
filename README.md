@@ -403,6 +403,11 @@ sudo systemctl stop kubelet
 # Delete the data directory (default is /var/lib/etcd)
 sudo rm -rf /var/lib/etcd
 
+sudo rm -rf /etc/kubernetes/
+sudo rm -rf /var/lib/kubelet
+sudo rm -rf /var/lib/etcd
+sudo rm -rf /etc/cni/net.d
+
 # Start kubelet again
 sudo systemctl start kubelet
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
