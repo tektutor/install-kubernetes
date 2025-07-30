@@ -111,7 +111,7 @@ containerd config default | sudo tee /etc/containerd/config.toml
 sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
 sudo systemctl restart containerd
 
-sudo cat /var/lib/kubelet/config.yaml | grep cgroupDriver
+ps -ef | grep kubelet | grep -E 'cgroup-driver=systemd|config='
 containerd config dump | grep SystemdCgroup
 
 # Containerd config
