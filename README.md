@@ -263,6 +263,8 @@ https://apt.kubernetes.io/ kubernetes-xenial main" | \
 sudo tee /etc/apt/sources.list.d/kubernetes.list > /dev/null
 sudo apt install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
+
+containerd config dump | grep SystemdCgroup
 ```
 
 Let's install HAProxy on the haproxy vm
