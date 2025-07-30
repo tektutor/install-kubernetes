@@ -322,6 +322,31 @@ sudo ufw allow 22/tcp        # if SSH is needed
 sudo ufw allow 8404/tcp      # only if enabling HAProxy stats UI
 sudo iptables -A INPUT -p tcp --dport 6443 -j ACCEPT
 
+
+# Allow SSH access
+sudo ufw allow ssh
+
+# Enable the firewall. You will be prompted to confirm.
+sudo ufw enable
+
+# Kubernetes API Server
+sudo ufw allow 6443/tcp
+
+# etcd server client API (for inter-master communication)
+sudo ufw allow 2379:2380/tcp
+
+# Kubelet API
+sudo ufw allow 10250/tcp
+
+# Kube-scheduler
+sudo ufw allow 10259/tcp
+
+# Kube-controller-manager
+sudo ufw allow 10257/tcp
+
+# NodePort services (default range for application exposure)
+sudo ufw allow 30000:32767/tcp
+sudo ufw allow 30000:32767/udp
 ```
 
 SSH into first master VM
