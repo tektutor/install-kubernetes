@@ -392,9 +392,10 @@ sudo kubeadm init phase upload-certs --upload-certs
 
 Troubleshooting pod crash after kubeadm init
 ```
+containerd config dump | grep SystemdCgroup
 cat /var/lib/kubelet/config.yaml | grep cgroupDriver
-net.bridge.bridge-nf-call-iptables = 1
-net.ipv4.ip_forward = 1
+sysctl net.bridge.bridge-nf-call-iptables
+sysctl net.ipv4.ip_forward
 ```
 
 # Install Calico network plugin from the host machine
