@@ -27,74 +27,14 @@ sudo systemctl enable --now libvirtd
 sudo systemctl status libvirtd
 ```
 
-## Automating Virtual machine creation process with Vagrant
+## Let's create virtual machines using KVM manually
 
 Create a folder as admin
 ```
 sudo su -
-mkdir -p /root/kubernetes/scripts
-cd /root/kubernetes
-touch Vagrantfile
-touch scripts/bootstrap.sh
-
-wget https://vagrantcloud.com/ubuntu/boxes/jammy64/versions/20240514.0.0/providers/virtualbox.box -O jammy64.box
-vagrant box add ubuntu/jammy64 ./jammy64.box
-
-```
-Create a file named Vagrantfile
-```
-Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/ubuntu-22.04"
-
-  # HAProxy Load Balancer
-  config.vm.define "haproxy" do |haproxy|
-    haproxy.vm.hostname = "haproxy.k8s.rps.com"
-    haproxy.vm.network "private_network", ip: "192.168.56.10"
-    haproxy.vm.provider "virtualbox" do |vb|
-      vb.memory = 2048
-      vb.cpus = 2
-    end
-    haproxy.vm.provider "libvirt" do |lv|
-      lv.memory = 2048
-      lv.cpus = 2
-    end
-  end
-
-  # Define Master Nodes
-  (1..3).each do |i|
-    config.vm.define "master0#{i}" do |master|
-      master.vm.hostname = "master0#{i}.k8s.rps.com"
-      master.vm.network "private_network", ip: "192.168.56.1#{i}"
-      master.vm.provider "virtualbox" do |vb|
-        vb.memory = 131072
-        vb.cpus = 10
-      end
-      master.vm.provider "libvirt" do |lv|
-        lv.memory = 131072
-        lv.cpus = 10
-      end
-    end
-  end
-
-  # Define Worker Nodes
-  (1..3).each do |i|
-    config.vm.define "worker0#{i}" do |worker|
-      worker.vm.hostname = "worker0#{i}.k8s.rps.com"
-      worker.vm.network "private_network", ip: "192.168.56.2#{i}"
-      worker.vm.provider "virtualbox" do |vb|
-        vb.memory = 131072
-        vb.cpus = 10
-      end
-      worker.vm.provider "libvirt" do |lv|
-        lv.memory = 131072
-        lv.cpus = 10
-      end
-    end
-  end
-end
 ```
 
-Let's create the scripts/boostrap.sh
+Install the below in all Virtual Machines except HAProxy VM
 ```
 #!/bin/bash
 
@@ -138,12 +78,6 @@ containerd config default > /etc/containerd/config.toml
 systemctl restart containerd
 systemctl enable containerd
 
-# Add Kubernetes repo
-curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-
 # Enable kernel modules and sysctl settings
 modprobe overlay
 modprobe br_netfilter
@@ -161,7 +95,6 @@ EOF
 
 sysctl --system
 
-ps -ef | grep kubelet | grep -E 'cgroup-driver=systemd|config='
 ```
 
 Edit sudo vim /etc/crictl.yaml
@@ -173,77 +106,7 @@ timeout: 10
 debug: true
 ```
 
-Make sure the script is executable
-```
-chmod +x scripts/bootstrap.sh
-```
 
-In case, you wish to clean existing VMs
-```
-# Step 1: Destroy all VMs
-vagrant destroy -f
-
-# Step 2: Remove old `.vagrant` metadata and state
-rm -rf .vagrant
-
-# (Optional) Remove VirtualBox/Libvirt VMs if Vagrant left anything hanging
-# For VirtualBox:
-VBoxManage list vms
-VBoxManage unregistervm <vm-name> --delete
-
-# For Libvirt:
-virsh list --all
-virsh destroy <vm-name>
-virsh undefine <vm-name> --remove-all-storage
-```
-
-Let's create the VMs using Vagrant now
-```
-cd kubernetes
-virsh pool-destroy default  # Only if it's not running anything
-virsh pool-undefine default
-
-virsh pool-define-as default dir - - - - "/var/lib/libvirt/images"
-virsh pool-autostart default
-virsh pool-start default
-
-vagrant up
-```
-
-Let's configure the host machine to support bridged network for the VMs to communicate with each other directly. 
-Create a file /etc/netplan/01-netcfg.yaml
-<pre>
-network:
-  version: 2
-  renderer: networkd
-  ethernets:
-    eno2: {}
-  bridges:
-    br0:
-      interfaces: [eno2]
-      dhcp4: true  
-</pre>
-
-Run this on the host machine
-```
-ls -l /etc/netplan/
-
-# This is mandatory before issuing netplan commands, otherwise we will lose network connectivity to the machine
-# Especially if this is a remote machine, this is mandatory
-sudo chmod 600 /etc/netplan/01-netcfg.yaml
-
-sudo netplan try
-sudo netplan apply
-ifconfig eno2
-ping 8.8.8.8
-```
-
-Listing all Vagrants VMS
-```
-vagrant global-status
-cd /root/kubernetes
-vagrant ssh 
-```
 
 Run this on all Virtual Machines
 ```
@@ -255,21 +118,8 @@ sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
 sudo systemctl restart containerd
 
-# Add Kubernetes repo
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-
-sudo apt update
-sudo apt-get install -y apt-transport-https ca-certificates curl
-sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-
-echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] \
-https://apt.kubernetes.io/ kubernetes-xenial main" | \
-sudo tee /etc/apt/sources.list.d/kubernetes.list > /dev/null
-sudo apt install -y kubelet kubeadm kubectl
-sudo apt-mark hold kubelet kubeadm kubectl
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
 containerd config dump | grep SystemdCgroup
@@ -278,7 +128,12 @@ containerd config dump | grep SystemdCgroup
 Let's install HAProxy on the haproxy vm
 ```
 sudo apt update
-sudo apt install -y haproxy
+sudo apt install -y haproxy ufw
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+
 ```
 
 Edit /etc/haproxy/haproxy.cfg and replace the bottom section with the following:
