@@ -396,6 +396,7 @@ containerd config dump | grep SystemdCgroup
 cat /var/lib/kubelet/config.yaml | grep cgroupDriver
 sysctl net.bridge.bridge-nf-call-iptables
 sysctl net.ipv4.ip_forward
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ```
 Also edit sudo vim /etc/systemd/resolved.conf
 ```
