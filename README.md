@@ -383,7 +383,7 @@ Add the below in /etc/hosts on all nodes
 Run this on the k8s-master-1 node
 ```
 hostnamectl set-hostname master01.k8s.rps.com
-sudo kubeadm init --control-plane-endpoint "192.168.56.10:6443" --upload-certs
+sudo kubeadm init --control-plane-endpoint "192.168.56.10:6443" --upload-certs --pod-network-cidr=192.168.0.0/16
 sudo kubeadm token create --ttl 1h --print-join-command
 sudo kubeadm init phase upload-certs --upload-certs
 
