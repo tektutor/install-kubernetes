@@ -111,7 +111,6 @@ containerd config default | sudo tee /etc/containerd/config.toml
 sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
 sudo systemctl restart containerd
 
-ps -ef | grep kubelet | grep -E 'cgroup-driver=systemd|config='
 containerd config dump | grep SystemdCgroup
 
 # Containerd config
@@ -157,6 +156,18 @@ net.ipv4.ip_forward = 1
 EOF
 
 sysctl --system
+
+sudo mkdir -p /etc/systemd/system/kubelet.service.d
+cat <<EOF | sudo tee /etc/systemd/system/kubelet.service.d/10-containerd.conf
+[Service]
+Environment="KUBELET_EXTRA_ARGS=--container-runtime-endpoint=unix:///run/containerd/containerd.sock"
+EOF
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+ps -ef | grep kubelet | grep -E 'cgroup-driver=systemd|config='
+
 ```
 
 Make sure the script is executable
