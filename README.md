@@ -160,6 +160,15 @@ sysctl --system
 ps -ef | grep kubelet | grep -E 'cgroup-driver=systemd|config='
 ```
 
+Edit sudo vim /etc/crictl.yaml
+
+```
+runtime-endpoint: unix:///run/containerd/containerd.sock
+image-endpoint: unix:///run/containerd/containerd.sock
+timeout: 10
+debug: true
+```
+
 Make sure the script is executable
 ```
 chmod +x scripts/bootstrap.sh
